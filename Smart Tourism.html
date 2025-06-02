@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Tourism - Discover Incredible India</title>
+  <style>
+    /* Basic reset and styles */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    nav {
+      background-color: #004d40;
+      padding: 10px 20px;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #80cbc4;
+    }
+    #menu-toggle {
+      display: none;
+      cursor: pointer;
+      font-size: 28px;
+      color: white;
+    }
+    /* Responsive nav for small screens */
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: #004d40;
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        width: 180px;
+      }
+      nav ul.show {
+        display: flex;
+      }
+      #menu-toggle {
+        display: block;
+      }
+    }
+
+    /* Header with background image */
+    header#home {
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+    header#home::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 0;
+    }
+    header#home .overlay-text {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 0 15px;
+    }
+    header#home h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
+    }
+    header#home p {
+      font-size: 1.4rem;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+    }
+
+    /* Destinations */
+    section#destinations {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    section#destinations h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #004d40;
+    }
+    .destinations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 25px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .card-content {
+      padding: 15px;
+      flex-grow: 1;
+    }
+    .card-content h3 {
+      margin: 0 0 10px 0;
+      color: #00796b;
+    }
+    .card-content p {
+      margin: 0;
+      color: #555;
+    }
+
+    /* Details panel */
+    #details-panel {
+      max-width: 800px;
+      height: 100vh;
+      background: #e0f2f1;
+      margin: 30px auto;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #details-title {
+      color: #004d40;
+      font-size: 2rem;
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+    #details-desc {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      margin-top: 25px;
+    }
+    #details-nearby, #details-culture {
+      margin: 0 0 15px 20px;
+      color: #004d40;
+      font-weight: 600;
+    }
+    .close-btn {
+      background: #004d40;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .close-btn:hover {
+      background: #00796b;
+    }
+
+    /* Culture section */
+    section#culture {
+      padding: 40px 20px;
+      background: #004d40;
+      color: white;
+      max-width: 900px;
+      margin: 60px auto;
+      border-radius: 15px;
+      text-align: center;
+    }
+    section#culture h2 {
+      font-size: 2.5rem;
+      margin-bottom: 25px;
+    }
+    .video-container {
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+    .video-container iframe, .video-container video {
+      width: 100%;
+      height: 450px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+    section#culture p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Registration section */
+    section#register {
+      max-width: 600px;
+      margin: 50px auto 80px;
+      padding: 30px 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+    section#register h2 {
+      text-align: center;
+      color: #004d40;
+      margin-bottom: 25px;
+      font-size: 2rem;
+    }
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 18px;
+      border: 2px solid #004d40;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s ease;
+    }
+    form input:focus, form select:focus, form textarea:focus {
+      outline: none;
+      border-color: #00796b;
+    }
+    form button {
+      width: 100%;
+      background: #004d40;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 14px 0;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    form button:hover {
+      background: #00796b;
+    }
+
+    /* Contact section */
+    section#contact {
+      max-width: 600px;
+      margin: 0 auto 50px;
+      text-align: center;
+      color: #004d40;
+    }
+    section#contact h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    section#contact p {
+      font-size: 1rem;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <h1>Smart Tourism</h1>
+  <div id="menu-toggle">&#9776;</div>
+  <ul id="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#culture">Culture</a></li>
+    <li><a href="#register">Register</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<header id="home">
+  <div class="overlay-text">
+    <h1>Discover Incredible India</h1>
+    <p>Explore the rich heritage, vibrant culture, and breathtaking landscapes</p>
+  </div>
+</header>
+
+<section id="destinations">
+  <h2>Top Destinations</h2>
+  <div class="destinations-grid">
+    <div class="card" data-state="Agra">
+      <img src="https://plus.unsplash.com/premium_photo-1697729441569-f706fdd1f71c?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YWdyYXxlbnwwfHwwfHx8MA%3D%3D" alt="Agra Taj Mahal" />
+      <div class="card-content">
+        <h3>Agra</h3>
+        <p>Home of the iconic Taj Mahal and Mughal heritage.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Kerala">
+      <img loading="lazy" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Kerala Backwaters" />
+      <div class="card-content">
+        <h3>Kerala</h3>
+        <p>Known for serene backwaters, Ayurveda, and lush greenery.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Rajasthan">
+      <img loading="lazy" src="https://media.istockphoto.com/id/876174040/photo/mehrangarh-fort-located-in-jodhpur-india.jpg?s=612x612&w=0&k=20&c=OINTodug1l5kYpi49EaMgaDq3AWcx45yUMamUxZeIdk=" alt="Rajasthan Fort" />
+      <div class="card-content">
+        <h3>Rajasthan</h3>
+        <p>Land of majestic forts, deserts, and vibrant culture.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Goa">
+      <img loading="lazy" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80" alt="Goa Beach" />
+      <div class="card-content">
+        <h3>Goa</h3>
+        <p>Famous for its beaches, nightlife, and Portuguese heritage.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Varanasi">
+      <img loading="lazy" src="https://images.unsplash.com/photo-1706186839147-0d708602587b?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmFyYW5hc2klMjBnaGF0fGVufDB8fDB8fHww" alt="Varanasi Ghats" />
+      <div class="card-content">
+        <h3>Varanasi</h3>
+        <p>Spiritual city on the banks of the Ganges with ancient temples.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Mysore">
+      <img loading="lazy" src="https://media.istockphoto.com/id/172124032/photo/mysore-palace-at-dusk.jpg?s=612x612&w=0&k=20&c=paO74C_dVsY14IbK0RNqs0TD-lSteQy-AW5CnQFEb_4=" alt="Mysore Palace" />
+      <div class="card-content">
+        <h3>Mysore</h3>
+        <p>Known for grand palaces and rich cultural heritage in Karnataka.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Ajintha caves">
+      <img loading="lazy" src="https://aurangabadtourism.in/images/places-to-visit/header/ajanta-caves-aurangabad-tourism-entry-fee-timings-holidays-reviews-header.jpg" alt="Ajintha caves" />
+      <div class="card-content">
+        <h3>Ajintha caves</h3>
+        <p>The Ajanta Caves are 30 rock-cut Buddhist cave monuments dating from the second century BCE to about 480 CE in Aurangabad district of Maharashtra state in India. Ajanta Caves are a UNESCO World Heritage Site.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Darjeeling">
+      <img loading="lazy" src="https://thumbs.dreamstime.com/b/tea-pickers-darjeeling-teaplantations-dressed-colorful-clothes-plucking-fresh-leaves-bushes-43212168.jpg" alt="Darjeeling Tea Gardens" />
+      <div class="card-content">
+        <h3>Darjeeling</h3>
+        <p>Famous hill station known for tea plantations and stunning views.</p>
+      </div>
+    </div>
+    <div class="card" data-state="Hampi">
+      <img loading="lazy" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7X01OYT-YC9ll9SezG3LQSHRL0AxqYvIAqg&s" alt="Hampi Ruins" />
+      <div class="card-content">
+        <h3>Hampi</h3>
+        <p>UNESCO heritage site with ancient ruins and temples.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="details-panel" style="display:none;">
+    <h3 id="details-title"></h3>
+    <p id="details-desc"></p>
+    <p><strong>Nearby Places:</strong></p>
+    <ul id="details-nearby"></ul>
+    <p><strong>Culture & Cuisine:</strong></p>
+    <ul id="details-culture"></ul>
+    <button class="close-btn" id="close-details">Close</button>
+  </div>
+</section>
+
+<section id="culture">
+  <h2>Culture & Festivals</h2>
+  <div class="video-container">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/m8qf5bSmlQQ?si=4yG9g73dVRyunYKd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+  <p>
+    India is home to vibrant festivals such as Diwali, Holi, Durga Puja, and Onam. Experience traditional dances, colorful celebrations, and diverse cuisines that reflect the rich cultural heritage of the country.
+  </p>
+</section>
+
+<section id="register">
+  <h2>Register for a Tour</h2>
+  <form id="tour-form">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email Address" required />
+    <select name="state" required>
+      <option value="" disabled selected>Select Destination State</option>
+      <option value="Agra">Agra</option>
+      <option value="Kerala">Kerala</option>
+      <option value="Rajasthan">Rajasthan</option>
+      <option value="Goa">Goa</option>
+      <option value="Varanasi">Varanasi</option>
+      <option value="Mysore">Mysore</option>
+      <option value="Ajintha caves">Ajintha caves</option>
+      <option value="Darjeeling">Darjeeling</option>
+      <option value="Hampi">Hampi</option>
+    </select>
+    <textarea name="message" placeholder="Additional Requests or Questions" rows="4"></textarea>
+    <button type="submit">Submit Registration</button>
+  </form>
+</section>
+
+<section id="contact">
+  <h2>Contact Us</h2>
+  <p>Email: info@smarttourism.in</p>
+  <p>Phone: +91 98765 43210</p>
+  <p>Address: 123 Tourism Ave, New Delhi, India</p>
+</section>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const navLinks = document.getElementById('nav-links');
+  menuToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+  });
+
+  // Data for destinations details (added new places)
+  const destinationsData = {
+    Agra: {
+      desc: "Famous for the Taj Mahal, Agra is a historic city filled with Mughal architecture and beautiful gardens.",
+      nearby: ["Fatehpur Sikri", "Mathura", "Vrindavan"],
+      culture: ["Mughlai Cuisine", "Traditional Handicrafts", "Historical Music and Dance"]
+    },
+    Kerala: {
+      desc: "Kerala is known as 'God's Own Country' with its serene backwaters, rich Ayurveda traditions, and lush landscapes.",
+      nearby: ["Munnar", "Alleppey", "Kochi"],
+      culture: ["Kathakali Dance", "Spicy Seafood Cuisine", "Onam Festival"]
+    },
+    Rajasthan: {
+      desc: "Experience the royal heritage with forts, palaces, deserts, and colorful festivals in Rajasthan.",
+      nearby: ["Jaipur", "Jodhpur", "Udaipur"],
+      culture: ["Rajasthani Folk Music", "Camel Festival", "Traditional Thali Cuisine"]
+    },
+    Goa: {
+      desc: "Goa offers beautiful beaches, Portuguese heritage, vibrant nightlife, and delicious seafood.",
+      nearby: ["Panaji", "Margao", "Vasco da Gama"],
+      culture: ["Goan Carnival", "Feni Liquor", "Portuguese Architecture"]
+    },
+    Varanasi: {
+      desc: "One of the world's oldest inhabited cities, Varanasi is the spiritual capital of India by the Ganges River.",
+      nearby: ["Sarnath", "Allahabad", "Mirzapur"],
+      culture: ["Ganga Aarti", "Banarasi Sarees", "Classical Music and Dance"]
+    },
+    Mysore: {
+      desc: "Mysore is known for its grand palaces, sandalwood products, and Dasara festival celebrations.",
+      nearby: ["Coorg", "Bangalore", "Ooty"],
+      culture: ["Mysore Dasara Festival", "Carnatic Music", "South Indian Cuisine"]
+    },
+    "Ajintha caves": {
+      desc: "The Ajintha Caves are rock-cut Buddhist monuments dating from the 2nd century BCE to about 480 CE, showcasing ancient Indian art and architecture.",
+      nearby: ["Ellora Caves", "Aurangabad", "Daulatabad Fort"],
+      culture: ["Buddhist Art", "Ancient Sculptures", "Cave Temples"]
+    },
+    Darjeeling: {
+      desc: "Darjeeling offers stunning mountain views, famous tea plantations, and a colonial charm.",
+      nearby: ["Gangtok", "Kalimpong", "Siliguri"],
+      culture: ["Tea Culture", "Himalayan Folk Music", "Buddhist Monasteries"]
+    },
+    Hampi: {
+      desc: "Hampi is a UNESCO World Heritage Site with ancient ruins, temples, and mesmerizing landscapes.",
+      nearby: ["Badami", "Pattadakal", "Aihole"],
+      culture: ["Kannada Folk Dance", "Temple Festivals", "Traditional Handicrafts"]
+    }
+  };
+
+  const cards = document.querySelectorAll('.card');
+  const detailsPanel = document.getElementById('details-panel');
+  const detailsTitle = document.getElementById('details-title');
+  const detailsDesc = document.getElementById('details-desc');
+  const detailsNearby = document.getElementById('details-nearby');
+  const detailsCulture = document.getElementById('details-culture');
+  const closeBtn = document.getElementById('close-details');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const state = card.getAttribute('data-state');
+      if(destinationsData[state]) {
+        detailsTitle.textContent = state;
+        detailsDesc.textContent = destinationsData[state].desc;
+
+        // Populate nearby
+        detailsNearby.innerHTML = '';
+        destinationsData[state].nearby.forEach(place => {
+          const li = document.createElement('li');
+          li.textContent = place;
+          detailsNearby.appendChild(li);
+        });
+
+        // Populate culture
+        detailsCulture.innerHTML = '';
+        destinationsData[state].culture.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          detailsCulture.appendChild(li);
+        });
+
+        detailsPanel.style.display = 'block';
+        window.scrollTo({ top: detailsPanel.offsetTop - 50, behavior: 'smooth' });
+      }
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    detailsPanel.style.display = 'none';
+  });
+
+  // Optional: Form submit handler with alert (demo)
+  const form = document.getElementById('tour-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Thank you for registering! We will contact you soon.');
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
+
